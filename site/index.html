@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Actions for Authors — Asdale Dynamics, LLC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --muted: #5b5b70;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --bg: #fafafb;
+    --surface: #ffffff;
+    --border: #e2e2ea;
+    --code-bg: #f3f3f7;
+    --code-border: #d9d9e0;
+    --success: #15803d;
+    --warn: #b45309;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    font-family: 'Source Sans Pro', sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.65;
+  }
+
+  /* Header */
+  header {
+    background: var(--ink);
+    color: #fff;
+    padding: 48px 20px;
+    text-align: center;
+  }
+
+  header .kicker {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: #9fd4ff;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  header h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 2.1rem;
+    margin: 0 0 10px 0;
+    font-weight: 700;
+  }
+
+  header p {
+    font-size: 1.05rem;
+    color: #c7cfe0;
+    margin: 0;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  /* Navigation */
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  nav a {
+    display: block;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    color: var(--muted);
+    text-decoration: none;
+    border-radius: 6px;
+  }
+
+  nav a:hover, nav a:focus {
+    background: #f0f1f4;
+    color: var(--ink);
+  }
+
+  /* Layout */
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 32px 20px 64px 20px;
+  }
+
+  .intro {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+  }
+
+  .intro strong { color: var(--ink); }
+
+  h2 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.6rem;
+    margin: 40px 0 14px 0;
+    color: var(--ink);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 8px;
+  }
+
+  h3 {
+    font-size: 1.15rem;
+    margin: 26px 0 8px 0;
+    color: var(--accent);
+  }
+
+  p { margin: 0 0 14px 0; }
+  a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  a:hover { color: var(--accent-hover); }
+
+  ul, ol { margin: 8px 0 18px 0; padding-left: 24px; }
+  li { margin-bottom: 6px; }
+
+  /* Cards */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .card h4 {
+    margin: 0 0 10px 0;
+    font-size: 1.05rem;
+    color: var(--ink);
+  }
+
+  .card p { margin: 0; font-size: 0.95rem; color: var(--muted); }
+
+  /* Code blocks */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    margin: 16px 0;
+  }
+
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.9rem;
+  }
+
+  pre code { padding: 0; background: transparent; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.92rem;
+  }
+
+  th, td {
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    text-align: left;
+  }
+
+  th { background: #f0f1f4; color: var(--ink); }
+
+  /* Callouts */
+  .note {
+    background: #eef6ff;
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 18px 0;
+    font-size: 0.95rem;
+  }
+
+  .warn {
+    background: #fdf3e3;
+    border-left: 4px solid var(--warn);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 18px 0;
+    font-size: 0.95rem;
+  }
+
+  .worksheet {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    background: var(--surface);
+  }
+
+  .worksheet h2 { border: none; margin-top: 0; }
+  .worksheet label {
+    display: block;
+    font-weight: 600;
+    margin-top: 14px;
+    font-size: 0.92rem;
+  }
+  .worksheet input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    margin-top: 4px;
+  }
+  .worksheet .line {
+    border-bottom: 1px solid #ccc;
+    height: 28px;
+    margin-top: 6px;
+  }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  footer p { margin: 4px 0; }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.6rem; }
+    h2 { font-size: 1.4rem; }
+    nav a { padding: 8px 12px; font-size: 0.85rem; }
+  }
+
+  /* Print */
+  @media print {
+    body { background: #fff; }
+    nav, footer { display: none; }
+    .container { padding: 0; }
+    h2 { border-bottom: 1px solid #000; }
+    pre { border: 1px solid #000; background: #fff; }
+    .card { border: 1px solid #000; break-inside: avoid; }
+    .worksheet { border: 2px solid #000; break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="kicker">Asdale Dynamics, LLC &bull; Beginner Guide</span>
+  <h1>GitHub Actions for Authors</h1>
+  <p>Auto-build book sites, run checks on pushes, deploy to GitHub Pages, and handle secrets safely — plain English, step by step.</p>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#what">What is GitHub Actions?</a></li>
+    <li><a href="#first">Your first workflow</a></li>
+    <li><a href="#build">Build a book site</a></li>
+    <li><a href="#checks">Run checks</a></li>
+    <li><a href="#deploy">Deploy to Pages</a></li>
+    <li><a href="#secrets">Safe secrets</a></li>
+    <li><a href="#worksheet">Printable worksheet</a></li>
+  </ul>
+</nav>
+
+<div class="container">
+
+  <div class="intro">
+    <p><strong>Written for authors and small publishers</strong> who want their websites and checks to run themselves. Created by <strong>Asdale Dynamics, LLC</strong>. No jargon, no condescension — just clear steps you can follow.</p>
+    <p class="note"><strong>Tip:</strong> The workflow examples below are for you to copy into <em>your own</em> repository. This site does not include a <code>.github/workflows/</code> folder, and no secrets or personal data are stored here.</p>
+  </div>
+
+  <section id="what">
+    <h2>1. What is GitHub Actions?</h2>
+    <p>GitHub Actions is a free tool built into GitHub that runs tasks for you automatically. Think of it like a robot assistant that lives in your repository. You tell it what to do, when to do it, and it does the work &mdash; no one has to click a button.</p>
+    <p>Common jobs for authors:</p>
+    <ul>
+      <li><strong>Build your book site</strong> every time you push a new chapter.</li>
+      <li><strong>Run checks</strong> on pushes (links, spelling, formatting).</li>
+      <li><strong>Deploy to GitHub Pages</strong> so your book is live on the web for free.</li>
+      <li><strong>Handle secrets safely</strong> (API keys, publishing tokens) without ever pasting them into a file.</li>
+    </ul>
+    <p>All of this is defined in a YAML file &mdash; a plain-text format that looks like a list with indentation. If you can write an email, you can write YAML.</p>
+    <div class="note"><strong>Where workflow files live:</strong> In a folder called <code>.github/workflows/</code> inside your repository. Each <code>.yml</code> or <code>.yaml</code> file there is one automated job.</div>
+  </section>
+
+  <section id="first">
+    <h2>2. Your first workflow: "Hello, book"</h2>
+    <p>Create <code>.github/workflows/hello.yml</code> in your repository:</p>
+    <pre><code>name: Hello, book
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Say hello
+        run: echo "Hello from your book site!"</code></pre>
+    <table>
+      <thead>
+        <tr><th>Line</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>name:</code></td><td>A friendly name shown on the GitHub Actions tab.</td></tr>
+        <tr><td><code>on:</code></td><td>The event that starts the workflow. <code>push</code> means "when code is pushed."</td></tr>
+        <tr><td><code>branches:</code></td><td>Only run on the <code>main</code> branch.</td></tr>
+        <tr><td><code>jobs:</code></td><td>A group of tasks.</td></tr>
+        <tr><td><code>runs-on:</code></td><td>The computer GitHub provides. <code>ubuntu-latest</code> is standard.</td></tr>
+        <tr><td><code>steps:</code></td><td>The list of actions to do, in order.</td></tr>
+        <tr><td><code>run:</code></td><td>A shell command to execute.</td></tr>
+      </tbody>
+    </table>
+    <p>Push this file to GitHub, then open your repository's <strong>Actions</strong> tab. You should see your workflow run and print <code>Hello from your book site!</code></p>
+  </section>
+
+  <section id="build">
+    <h2>3. Auto-build a book site</h2>
+    <p>This workflow converts your Markdown (`.md`) files into HTML every time you push, saving them in a <code>_site/</code> folder.</p>
+    <pre><code>name: Build book site
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install a Markdown converter
+        run: pip install markdown
+
+      - name: Build HTML from Markdown
+        run: |
+          mkdir -p _site
+          for file in *.md; do
+            [ -e "$file" ] || continue
+            python -m markdown "$file" &gt; "_site/${file%.md}.html"
+          done
+
+      - name: Upload site as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: book-site
+          path: _site</code></pre>
+    <div class="card">
+      <h4>How it works</h4>
+      <p><code>actions/checkout@v4</code> downloads your repository. <code>actions/setup-python@v5</code> installs Python. The <code>run:</code> block converts every `.md` file to HTML in `<code>_site/</code>`. The artifact step saves the built site so you can download or deploy it.</p>
+    </div>
+  </section>
+
+  <section id="checks">
+    <h2>4. Run checks on pushes</h2>
+    <p>Automatic checks catch problems early. This example verifies Markdown files have titles and that no file is too large.</p>
+    <pre><code>name: Run checks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Check Markdown files have titles
+        run: |
+          for file in *.md; do
+            [ -e "$file" ] || continue
+            if ! head -1 "$file" | grep -q '^# '; then
+              echo "::error file=$file::Missing title (start with # Title)"
+              exit 1
+            fi
+          done
+
+      - name: Check no file is too large
+        run: |
+          big=$(find . -type f -size +5M -not -path './.git/*' | head -n 1)
+          if [ -n "$big" ]; then
+            echo "::error::File too large: $big"
+            exit 1
+          fi</code></pre>
+    <p>Runs on both <code>push</code> and <code>pull_request</code>. If a step exits with <code>exit 1</code>, GitHub shows a red X, protecting your main branch from broken changes.</p>
+  </section>
+
+  <section id="deploy">
+    <h2>5. Deploy to GitHub Pages</h2>
+    <p>GitHub Pages hosts your site for free. This workflow builds your site and publishes it automatically.</p>
+    <pre><code>name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Markdown converter
+        run: pip install markdown
+
+      - name: Build HTML site
+        run: |
+          mkdir -p _site
+          for file in *.md; do
+            [ -e "$file" ] || continue
+            python -m markdown "$file" &gt; "_site/${file%.md}.html"
+          done
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4</code></pre>
+    <div class="warn"><strong>Before you deploy:</strong> In your repository on GitHub, go to <strong>Settings &rarr; Pages</strong>. Under "Build and deployment," set <strong>Source</strong> to "GitHub Actions."</div>
+    <p>The first time you push this workflow, GitHub creates a deployment. After it finishes, your site is live at <code>https://yourusername.github.io/your-repo/</code>. Every push rebuilds and redeploys it.</p>
+  </section>
+
+  <section id="secrets">
+    <h2>6. Safe secrets handling</h2>
+    <p>Never put passwords, API keys, or tokens in a YAML file. Anyone who can see your repository can see the file.</p>
+    <p><strong>The right way:</strong> Store the secret in GitHub (<strong>Settings &rarr; Secrets and variables &rarr; Actions</strong>), then reference it in your workflow:</p>
+    <pre><code>      - name: Publish to book store
+        run: echo "Publishing with key of length ${#BOOK_STORE_API_KEY}"
+        env:
+          BOOK_STORE_API_KEY: ${{ secrets.BOOK_STORE_API_KEY }}</code></pre>
+    <table>
+      <thead>
+        <tr><th>Do</th><th>Don't</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Store secrets in GitHub's secret settings</td><td>Paste secrets into YAML files</td></tr>
+        <tr><td>Use <code>${{ secrets.SECRET_NAME }}</code> only inside <code>env:</code></td><td>Log or print secret values</td></tr>
+        <tr><td>Use different secrets for different repositories</td><td>Reuse one personal key everywhere</td></tr>
+      </tbody>
+    </table>
+    <p>For deploys, use a GitHub <strong>Environment</strong> (like <code>github-pages</code> above). Environments can require approval before a workflow runs, so a deploy doesn't happen until someone clicks "Approve."</p>
+  </section>
+
+  <section id="worksheet">
+    <h2>7. Printable workflow worksheet</h2>
+    <p>Print this or copy it into a notebook. Fill in the blanks before you create a workflow file.</p>
+    <div class="worksheet">
+      <form>
+        <label>Workflow name</label>
+        <input type="text" placeholder="e.g. Build book site">
+
+        <label>When should it run? (push / pull_request / schedule / manual)</label>
+        <input type="text" placeholder="e.g. push">
+
+        <label>Branch</label>
+        <input type="text" placeholder="e.g. main">
+
+        <label>Computer (runs-on)</label>
+        <input type="text" placeholder="e.g. ubuntu-latest">
+
+        <label>Steps (what the robot does, in order)</label>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+
+        <label>Secret needed? (name it, or "none")</label>
+        <input type="text" placeholder="e.g. none">
+
+        <label>Where should output go? (artifact / Pages / nothing)</label>
+        <input type="text" placeholder="e.g. Pages">
+
+        <label>What should I check after it runs?</label>
+        <div class="line"></div>
+        <div class="line"></div>
+      </form>
+    </div>
+    <p class="note"><strong>Tip:</strong> Start with one tiny workflow. Get it working, then add more steps. Automation is easier one step at a time.</p>
+  </section>
+
+  <section>
+    <h2>Troubleshooting</h2>
+    <table>
+      <thead>
+        <tr><th>Problem</th><th>What to try</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Workflow doesn't appear</td><td>Check the file is in <code>.github/workflows/</code> and ends in <code>.yml</code> or <code>.yaml</code>.</td></tr>
+        <tr><td>Red X on a run</td><td>Click the run in the Actions tab, then click the failed step to see its logs.</td></tr>
+        <tr><td>"Permission denied" deploying</td><td>Go to Settings &rarr; Pages and set the source to "GitHub Actions."</td></tr>
+        <tr><td>Secret not found</td><td>Make sure the secret name matches exactly (case-sensitive).</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+</div>
+
+<footer>
+  <p>Created by <strong>Asdale Dynamics, LLC</strong> &mdash; beginner-friendly AI education, books, and practical tools.</p>
+  <p>MIT License. Copyright (c) 2026 Asdale Dynamics, LLC.</p>
+</footer>
+
+</body>
+</html>
